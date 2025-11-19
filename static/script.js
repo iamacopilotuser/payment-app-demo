@@ -154,7 +154,7 @@ document.getElementById('payment-form').addEventListener('submit', async functio
     } finally {
         // Reset button
         submitBtn.disabled = false;
-        btnText.style.display = 'inline';
+        btnText.style.display = 'flex';
         btnLoader.style.display = 'none';
     }
 });
