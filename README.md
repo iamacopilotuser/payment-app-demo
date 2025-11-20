@@ -190,7 +190,7 @@ This project is provided as-is for educational and prototyping purposes.
 ## 🙋 Support
 
 For questions or issues, this is a standalone prototype without official support.
-
+ 
 ---
 
 **Happy Prototyping! 🚀**
