@@ -69,7 +69,7 @@ jobs:
           fi
 
       - name: Post a message in a channel
-        if: always()
+        if: always() && github.ref == 'refs/heads/main'
         uses: slackapi/slack-github-action@v2.1.1
         with:
           webhook: ${{ secrets.SLACK_WEBHOOK_URL }}
