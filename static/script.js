@@ -127,7 +127,7 @@ document.getElementById('payment-form').addEventListener('submit', async functio
     
     try {
         // Send payment request
-        const response = await fetch('/api/payment', {
+        const response = await fetch('http://localhost:5000/api/payment', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
