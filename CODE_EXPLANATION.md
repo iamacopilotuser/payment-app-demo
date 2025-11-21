@@ -50,8 +50,17 @@ payment-app-demo/
 
 ### Key Components
 
-#### 1. **Flask Application Setup** (Lines 10-14)
+#### 1. **Flask Application Setup** (Lines 1-14)
 ```python
+from flask import Flask, request, jsonify, send_from_directory
+from flask_cors import CORS
+import json
+import os
+from datetime import datetime
+import random
+import string
+import math
+
 app = Flask(__name__, static_folder='static')
 CORS(app)
 payments = []  # In-memory storage
@@ -119,6 +128,7 @@ def process_payment():
 
 3. **Simulates Processing Delay** (Lines 57-59)
    ```python
+   import time
    time.sleep(1)  # 1-second delay for realism
    ```
 
@@ -259,7 +269,7 @@ The application includes comprehensive pytest tests:
    - `test_multiple_payments`: Multiple payments stored correctly
    - `test_card_last_four_stored`: Only last 4 digits saved
 
-### Test Results:
+### Test Results (11 total tests):
 - **10 passing tests** ✅
 - **1 failing test** ❌: `test_negative_payment_rejected`
   - Reason: `validate_positive = False` on line 51 of `app.py`
