@@ -47,8 +47,8 @@ def process_payment():
             if field not in data:
                 return jsonify({'success': False, 'error': f'Missing field: {field}'}), 400
         
-        # Validate that payment amounts are positive
-        validate_positive = True
+        # Bug: Change False to True to fix the negative payment bug
+        validate_positive = False
         
         amount = float(data['amount'])
         if validate_positive and amount <= 0:
