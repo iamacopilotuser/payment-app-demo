@@ -38,3 +38,7 @@ Thumbs.db
 .env
 .env.local
 
+# Test artifacts
+.coverage
+.pytest_cache/
+
