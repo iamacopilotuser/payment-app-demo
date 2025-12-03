@@ -40,6 +40,8 @@ def process_payment():
     """Process a fake payment"""
     try:
         data = request.json
+        if data is None:
+            return jsonify({'success': False, 'error': 'Invalid JSON payload.'}), 400
         
         # Validate required fields
         required_fields = ['cardNumber', 'cardName', 'expiryDate', 'cvv', 'amount']
@@ -47,11 +49,8 @@ def process_payment():
             if field not in data:
                 return jsonify({'success': False, 'error': f'Missing field: {field}'}), 400
         
-        # Bug: Change False to True to fix the negative payment bug
-        validate_positive = False
-        
         amount = float(data['amount'])
-        if validate_positive and amount <= 0:
+        if amount <= 0:
             return jsonify({'success': False, 'error': 'Amount must be greater than zero.'}), 400
         
         # Simulate payment processing delay
