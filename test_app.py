@@ -1,6 +1,6 @@
 import pytest
 import json
-from app import app, payments, generate_transaction_id
+from app import app, payments, generate_transaction_id, get_repository_info
 
 
 @pytest.fixture
@@ -212,4 +212,36 @@ class TestPaymentAPI:
         assert len(payments) == 1
         assert payments[0]['card_last_four'] == '6467'
         assert 'cardNumber' not in payments[0]  # Full card number not stored
+    
+    def test_get_repository_info(self, client):
+        """Test getting repository information"""
+        response = client.get('/api/repository/info')
+        data = json.loads(response.data)
+        
+        assert response.status_code == 200
+        assert data['success'] is True
+        assert 'repository_info' in data
+        assert 'connected_repositories' in data['repository_info']
+    
+    def test_repository_info_structure(self, client):
+        """Test that repository info has correct structure"""
+        response = client.get('/api/repository/info')
+        data = json.loads(response.data)
+        
+        assert response.status_code == 200
+        repo_info = data['repository_info']
+        
+        # Check structure
+        if len(repo_info['connected_repositories']) > 0:
+            repo = repo_info['connected_repositories'][0]
+            assert 'name' in repo
+            assert 'url' in repo
+            assert 'current_branch' in repo
+    
+    def test_get_repository_info_function(self):
+        """Test the get_repository_info function directly"""
+        repo_info = get_repository_info()
+        
+        assert 'connected_repositories' in repo_info
+        assert isinstance(repo_info['connected_repositories'], list)
 

@@ -6,6 +6,7 @@ from datetime import datetime
 import random
 import string
 import math
+import subprocess
 
 app = Flask(__name__, static_folder='static')
 CORS(app)
@@ -16,6 +17,55 @@ payments = []
 def generate_transaction_id():
     """Generate a fake transaction ID"""
     return ''.join(random.choices(string.ascii_uppercase + string.digits, k=12))
+
+def get_repository_info():
+    """Get information about connected git repositories"""
+    repo_info = {
+        'connected_repositories': []
+    }
+    
+    try:
+        # Get git remote information
+        result = subprocess.run(
+            ['git', 'remote', '-v'],
+            capture_output=True,
+            text=True,
+            timeout=5
+        )
+        
+        if result.returncode == 0 and result.stdout:
+            # Parse git remote output
+            remotes = {}
+            for line in result.stdout.strip().split('\n'):
+                if line:
+                    parts = line.split()
+                    if len(parts) >= 2:
+                        remote_name = parts[0]
+                        remote_url = parts[1]
+                        if remote_name not in remotes:
+                            remotes[remote_name] = remote_url
+            
+            # Get current branch
+            branch_result = subprocess.run(
+                ['git', 'rev-parse', '--abbrev-ref', 'HEAD'],
+                capture_output=True,
+                text=True,
+                timeout=5
+            )
+            current_branch = branch_result.stdout.strip() if branch_result.returncode == 0 else 'unknown'
+            
+            # Build repository info
+            for remote_name, remote_url in remotes.items():
+                repo_info['connected_repositories'].append({
+                    'name': remote_name,
+                    'url': remote_url,
+                    'current_branch': current_branch
+                })
+        
+    except (subprocess.TimeoutExpired, FileNotFoundError, Exception) as e:
+        repo_info['error'] = f'Unable to retrieve repository information: {str(e)}'
+    
+    return repo_info
 
 @app.route('/')
 def index():
@@ -105,6 +155,21 @@ def get_transaction(transaction_id):
             'success': False,
             'error': 'Transaction not found'
         }), 404
+
+@app.route('/api/repository/info', methods=['GET'])
+def get_repository_information():
+    """Get information about connected repositories"""
+    try:
+        repo_info = get_repository_info()
+        return jsonify({
+            'success': True,
+            'repository_info': repo_info
+        })
+    except Exception as e:
+        return jsonify({
+            'success': False,
+            'error': str(e)
+        }), 500
 
 if __name__ == '__main__':
     # Create static directory if it doesn't exist
