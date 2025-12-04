@@ -62,7 +62,7 @@ def get_repository_info():
                     'current_branch': current_branch
                 })
         
-    except (subprocess.TimeoutExpired, FileNotFoundError, Exception) as e:
+    except (subprocess.TimeoutExpired, FileNotFoundError, subprocess.CalledProcessError, OSError) as e:
         repo_info['error'] = f'Unable to retrieve repository information: {str(e)}'
     
     return repo_info
