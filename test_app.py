@@ -244,4 +244,20 @@ class TestPaymentAPI:
         
         assert 'connected_repositories' in repo_info
         assert isinstance(repo_info['connected_repositories'], list)
+    
+    def test_repository_info_error_handling(self, client, monkeypatch):
+        """Test that repository info endpoint handles errors correctly"""
+        def mock_get_repository_info():
+            return {'error': 'Git command failed', 'connected_repositories': []}
+        
+        # Mock the get_repository_info function to return an error
+        import app as app_module
+        monkeypatch.setattr(app_module, 'get_repository_info', mock_get_repository_info)
+        
+        response = client.get('/api/repository/info')
+        data = json.loads(response.data)
+        
+        assert response.status_code == 500
+        assert data['success'] is False
+        assert 'error' in data
 

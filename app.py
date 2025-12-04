@@ -159,17 +159,19 @@ def get_transaction(transaction_id):
 @app.route('/api/repository/info', methods=['GET'])
 def get_repository_information():
     """Get information about connected repositories"""
-    try:
-        repo_info = get_repository_info()
-        return jsonify({
-            'success': True,
-            'repository_info': repo_info
-        })
-    except Exception as e:
+    repo_info = get_repository_info()
+    
+    # Check if there was an error getting repository information
+    if 'error' in repo_info:
         return jsonify({
             'success': False,
-            'error': str(e)
+            'error': repo_info['error']
         }), 500
+    
+    return jsonify({
+        'success': True,
+        'repository_info': repo_info
+    })
 
 if __name__ == '__main__':
     # Create static directory if it doesn't exist
