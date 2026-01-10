@@ -114,6 +114,25 @@ Get all transactions (stored in memory)
 ### GET `/api/transaction/<transaction_id>`
 Get details of a specific transaction
 
+### GET `/api/repository/info`
+Get information about connected git repositories
+
+**Success Response:**
+```json
+{
+  "success": true,
+  "repository_info": {
+    "connected_repositories": [
+      {
+        "name": "origin",
+        "url": "https://github.com/username/repo",
+        "current_branch": "main"
+      }
+    ]
+  }
+}
+```
+
 ## 🎯 Features in Detail
 
 ### Frontend Features
